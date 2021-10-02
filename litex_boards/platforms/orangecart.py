@@ -86,7 +86,7 @@ class Platform(LatticePlatform):
         LatticePlatform.__init__(self, f"LFE5U-{device}-6BG256C", io, connectors, **kwargs)
 
     def create_programmer(self):
-        return DFUProg(vid="1209", pid="000c") # FIXME
+        return DFUProg(vid="1209", pid="000c", alt="0") # FIXME
 
     def do_finalize(self, fragment):
         LatticePlatform.do_finalize(self, fragment)

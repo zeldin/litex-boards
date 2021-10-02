@@ -16,7 +16,6 @@ from litex.build.lattice.trellis import trellis_args, trellis_argdict
 
 from litex.soc.cores.clock import *
 from litex.soc.integration.soc_core import *
-from litex.soc.integration.soc_sdram import *
 from litex.soc.integration.builder import *
 from litex.soc.cores.led import LedChaser
 
@@ -42,7 +41,7 @@ class _CRG(Module):
         self.submodules.pll = pll = ECP5PLL()
         pll.register_clkin(clk48_raw, 48e6)
 
-        pll.create_clkout(self.cd_sys, sys_clk_freq, 0)
+        pll.create_clkout(self.cd_sys, sys_clk_freq, 0, with_reset=False)
 
         self.sync.por += \
             If(reset_delay != 0,
@@ -85,20 +84,21 @@ def main():
     parser.add_argument("--load",  action="store_true", help="Load bitstream")
     parser.add_argument("--toolchain", default="trellis", help="Gateware toolchain to use, trellis (default) or diamond")
     builder_args(parser)
-    soc_sdram_args(parser)
+    soc_core_args(parser)
     trellis_args(parser)
     parser.add_argument("--sys-clk-freq", default=48e6,         help="System clock frequency (default=48MHz)")
     parser.add_argument("--device",       default="25F",        help="ECP5 device (default=25F)")
     parser.add_argument("--hyperram-device", default="S70KS1281", help="HyperRAM device (default=S70KS1281)")
     parser.add_argument("--with-spi-sdcard", action="store_true", help="Enable SPI-mode SDCard support")
     args = parser.parse_args()
+    args.yosys_abc9 = True
 
     soc = BaseSoC(
         toolchain    = args.toolchain,
         device       = args.device,
         hyperram_device = args.hyperram_device,
         sys_clk_freq = int(float(args.sys_clk_freq)),
-        **soc_sdram_argdict(args))
+        **soc_core_argdict(args))
     if args.with_spi_sdcard:
         soc.add_spi_sdcard()
     builder = Builder(soc, **builder_argdict(args))
