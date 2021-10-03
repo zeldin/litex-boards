@@ -23,31 +23,19 @@ class _CRG(Module):
     def __init__(self, platform, sys_clk_freq):
         clk48_raw = platform.request("clk48")
 
-        reset_delay = Signal(64, reset=int(sys_clk_freq*500e-6))
-        self.clock_domains.cd_por = ClockDomain()
-        self.reset = Signal()
-
+        self.clock_domains.cd_por = ClockDomain(reset_less=True)
         self.clock_domains.cd_sys = ClockDomain()
 
-        platform.add_period_constraint(self.cd_sys.clk, 1e9/sys_clk_freq)
-
-        # POR reset logic- POR generated from sys clk, POR logic feeds sys clk
-        # reset.
-        self.comb += [
-            self.cd_por.clk.eq(self.cd_sys.clk),
-            self.cd_sys.rst.eq(reset_delay != 0),
-        ]
+        por_count = Signal(16, reset=2**16-1)
+        por_done  = Signal()
+        self.comb += self.cd_por.clk.eq(clk48_raw)
+        self.comb += por_done.eq(por_count == 0)
+        self.sync.por += If(~por_done, por_count.eq(por_count - 1))
 
         self.submodules.pll = pll = ECP5PLL()
+        self.comb += pll.reset.eq(~por_done)
         pll.register_clkin(clk48_raw, 48e6)
-
-        pll.create_clkout(self.cd_sys, sys_clk_freq, 0, with_reset=False)
-
-        self.sync.por += \
-            If(reset_delay != 0,
-                reset_delay.eq(reset_delay - 1)
-            )
-        self.specials += AsyncResetSynchronizer(self.cd_por, self.reset)
+        pll.create_clkout(self.cd_sys, sys_clk_freq)
 
 
 # BaseSoC ------------------------------------------------------------------------------------------
