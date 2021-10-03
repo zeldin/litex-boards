@@ -73,6 +73,9 @@ class BaseSoC(SoCCore):
         # SPI Flash --------------------------------------------------------------------------------
         self.add_spi_flash(mode="4x", dummy_cycles=8)
 
+        # SDCard --------------------------------------------------------------------------------
+        self.add_spi_sdcard()
+
         # Leds -------------------------------------------------------------------------------------
         self.submodules.leds = LedChaser(
             pads         = Cat(*[platform.request("user_led", i) for i in range(3)]),
