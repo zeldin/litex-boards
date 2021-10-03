@@ -70,6 +70,9 @@ class BaseSoC(SoCCore):
         if not self.integrated_main_ram_size:
             raise Exception("HyperRAM not implemented yet")
 
+        # SPI Flash --------------------------------------------------------------------------------
+        self.add_spi_flash(mode="4x", dummy_cycles=8)
+
         # Leds -------------------------------------------------------------------------------------
         self.submodules.leds = LedChaser(
             pads         = Cat(*[platform.request("user_led", i) for i in range(3)]),
