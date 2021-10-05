@@ -11,7 +11,7 @@ _io = [
     ("clk48", 0, Pins("C8"),  IOStandard("LVCMOS33")),
     ("rst_n", 0, Pins("M8"), IOStandard("LVCMOS33")),
 
-    ("usr_btn", 0, Pins("F12"), IOStandard("SSTL18_I")),
+    ("usr_btn", 0, Pins("F12"), IOStandard("LVCMOS18"), Misc("PULLMODE=UP")),
 
     ("rgb_led", 0,
         Subsignal("r", Pins("T6"), IOStandard("LVCMOS33")),
