@@ -57,6 +57,7 @@ _io = [
         Subsignal("clk",  Pins("A10")),
         Subsignal("cmd",  Pins("E11"), Misc("PULLMODE=UP")),
         Subsignal("data", Pins("C9 E9 C11 B11"), Misc("PULLMODE=UP")),
+        Subsignal("cd",   Pins("A11"), Misc("PULLMODE=UP")),
         IOStandard("LVCMOS33"), Misc("SLEW=FAST")
     ),
 
