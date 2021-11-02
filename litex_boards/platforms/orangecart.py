@@ -23,6 +23,18 @@ _io = [
     ("user_led", 1, Pins("R6"), IOStandard("LVCMOS33")), # rgb_led.g
     ("user_led", 2, Pins("R8"), IOStandard("LVCMOS33")), # rgb_led.b
 
+    ("hyperram", 0,
+        Subsignal("dq", Pins(
+            "G15 B16 C15 D16 C16 F15 F16 E15"),
+            IOStandard("LVCMOS18")),
+        Subsignal("rwds", Pins("F14"), IOStandard("LVCMOS18")),
+        Subsignal("reset_n", Pins("J13"), IOStandard("LVCMOS18")),
+        Subsignal("cs_n", Pins("K14"), IOStandard("LVCMOS18")),
+        Subsignal("ck_p", Pins("J16"), IOStandard("SSTL18D_II")),
+        Subsignal("psc_p", Pins("G16"), IOStandard("SSTL18D_II")),
+        Misc("SLEWRATE=FAST")
+    ),
+
     ("usb", 0,
         Subsignal("d_p", Pins("R5")),
         Subsignal("d_n", Pins("T4")),

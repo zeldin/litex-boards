@@ -16,7 +16,9 @@ from litex.build.lattice.trellis import trellis_args, trellis_argdict
 
 from litex.soc.cores.clock import *
 from litex.soc.integration.soc_core import *
+from litex.soc.integration.soc import SoCRegion
 from litex.soc.integration.builder import *
+from litex.soc.interconnect import wishbone
 from litex.soc.cores.led import LedChaser
 
 class _CRG(Module):
@@ -57,7 +59,35 @@ class BaseSoC(SoCCore):
 
         # HyperRAM -------------------------------------------------------------------------------
         if not self.integrated_main_ram_size:
-            raise Exception("HyperRAM not implemented yet")
+
+            from litehyperram.core import LiteHyperRAMCore
+            from litehyperram.frontend.wishbone import LiteHyperRAMWishbone2Native
+            from litehyperram.modules import S70KS0641, S70KS1281
+            from litehyperram.phy import ECP5HYPERRAMPHY
+
+            available_hyperram_modules = {
+                "S70KS0641": S70KS0641,
+                "S70KS1281": S70KS1281
+            }
+            hyperram_module = available_hyperram_modules.get(hyperram_device)
+
+            self.submodules.hyperphy = ECP5HYPERRAMPHY(
+                platform.request("hyperram"),
+                sys_clk_freq=sys_clk_freq)
+
+            self.submodules.hyperram = LiteHyperRAMCore(
+                phy      = self.hyperphy,
+                module   = hyperram_module(),
+                clk_freq = self.sys_clk_freq)
+            port = self.hyperram.get_port()
+            sdram_size = port.data_width >> 3 << port.address_width
+            self.bus.add_region("main_ram", SoCRegion(origin=self.mem_map["main_ram"], size=sdram_size))
+            wb_hyperram = wishbone.Interface()
+            self.bus.add_slave("main_ram", wb_hyperram)
+            self.submodules.wishbone_bridge = LiteHyperRAMWishbone2Native(
+                wishbone = wb_hyperram,
+                port     = port,
+                base_address = self.bus.regions["main_ram"].origin)
 
         # SPI Flash --------------------------------------------------------------------------------
         self.add_spi_flash(mode="4x", dummy_cycles=8)
