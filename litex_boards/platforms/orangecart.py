@@ -49,7 +49,7 @@ _io = [
         Subsignal("mosi", Pins("E11"), Misc("PULLMODE=UP")),
         Subsignal("cs_n", Pins("B11"), Misc("PULLMODE=UP")),
         Subsignal("miso", Pins("C9"), Misc("PULLMODE=UP")),
-        Misc("SLEW=FAST"),
+        Misc("SLEWRATE=FAST"),
         IOStandard("LVCMOS33"),
     ),
 
@@ -58,7 +58,7 @@ _io = [
         Subsignal("cmd",  Pins("E11"), Misc("PULLMODE=UP")),
         Subsignal("data", Pins("C9 E9 C11 B11"), Misc("PULLMODE=UP")),
         Subsignal("cd",   Pins("A11"), Misc("PULLMODE=UP")),
-        IOStandard("LVCMOS33"), Misc("SLEW=FAST")
+        IOStandard("LVCMOS33"), Misc("SLEWRATE=FAST")
     ),
 
     ("serial", 0,
