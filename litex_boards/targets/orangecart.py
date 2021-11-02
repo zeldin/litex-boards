@@ -111,7 +111,7 @@ def main():
     builder_args(parser)
     soc_core_args(parser)
     trellis_args(parser)
-    parser.add_argument("--sys-clk-freq", default=48e6,         help="System clock frequency (default=48MHz)")
+    parser.add_argument("--sys-clk-freq", default=64e6,         help="System clock frequency (default=64MHz)")
     parser.add_argument("--device",       default="25F",        help="ECP5 device (default=25F)")
     parser.add_argument("--hyperram-device", default="S70KS1281", help="HyperRAM device (default=S70KS1281)")
     parser.add_argument("--with-spi-sdcard", action="store_true", help="Enable SPI-mode SDCard support")
