@@ -77,6 +77,41 @@ _io = [
         Subsignal("tx", Pins("D8"), IOStandard("LVCMOS33")),
         Subsignal("rx", Pins("E8"), IOStandard("LVCMOS33"))
     ),
+
+    ("c64expansionport", 0,
+        Subsignal("d_en_n", Pins("T3")),
+        Subsignal("d_dir", Pins("T2")),
+        Subsignal("a_en_n", Pins("L1 E2")),
+        Subsignal("a_dir", Pins("L5 E1")),
+
+        Subsignal("a", Pins("M6 R4 P4 N4 N5 M5 M3 L4 H5 G4 J1 J2 G1 G2 F1 F2")),
+        Subsignal("d", Pins("M1 N3 P2 N1 R3 P1 R2 R1")),
+        Subsignal("phi2", Pins("C2")),
+        Subsignal("nmi_out", Pins("G5")),
+        Subsignal("reset_n_in", Pins("B1")),
+        Subsignal("reset_out", Pins("C1")),
+        Subsignal("romh_n", Pins("C3")),
+        Subsignal("dma_out", Pins("M2")),
+        Subsignal("ba", Pins("K2")),
+        Subsignal("roml_n", Pins("L2")),
+        Subsignal("io2_n", Pins("K1")),
+        Subsignal("exrom", Pins("D1")),
+        Subsignal("game", Pins("D3")),
+        Subsignal("io1_n", Pins("F5")),
+        Subsignal("dotclk", Pins("B2")),
+        Subsignal("rw_in", Pins("E3")),
+        Subsignal("rw_out_n", Pins("F3")),
+        Subsignal("irq_out", Pins("F4")),
+        IOStandard("LVCMOS33"), Misc("SLEWRATE=SLOW")
+    ),
+
+    ("clockport", 0,
+        Subsignal("iowr_n", Pins("G3")),
+        Subsignal("iord_n", Pins("H3")),
+        Subsignal("rtc_cs_n", Pins("H4")),
+        Subsignal("spare_cs_n", Pins("J5")),
+        IOStandard("LVCMOS33"), Misc("SLEWRATE=SLOW")
+    ),
 ]
 
 # Connectors ---------------------------------------------------------------------------------------
