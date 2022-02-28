@@ -88,7 +88,7 @@ _io = [
         Subsignal("d", Pins("M1 N3 P2 N1 R3 P1 R2 R1")),
         Subsignal("phi2", Pins("C2")),
         Subsignal("nmi_out", Pins("G5")),
-        Subsignal("reset_n_in", Pins("B1")),
+        Subsignal("reset_in_n", Pins("B1")),
         Subsignal("reset_out", Pins("C1")),
         Subsignal("romh_n", Pins("C3")),
         Subsignal("dma_out", Pins("M2")),
