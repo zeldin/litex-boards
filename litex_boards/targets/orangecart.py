@@ -44,7 +44,7 @@ class _CRG(Module):
 # BaseSoC ------------------------------------------------------------------------------------------
 
 class BaseSoC(SoCCore):
-    def __init__(self, revision=None, device="25F", hyperram_device="S70KS1281",
+    def __init__(self, revision=None, device="25F", hyperram_device="S70KS1281DP",
                  sys_clk_freq=int(48e6), toolchain="trellis", **kwargs):
         platform = orangecart.Platform(revision=revision, device=device ,toolchain=toolchain)
 
@@ -62,12 +62,12 @@ class BaseSoC(SoCCore):
 
             from litehyperram.core import LiteHyperRAMCore
             from litehyperram.frontend.wishbone import LiteHyperRAMWishbone2Native
-            from litehyperram.modules import S70KS0641, S70KS1281
+            from litehyperram.modules import S27KS0641DP, S70KS1281DP
             from litehyperram.phy import ECP5HYPERRAMPHY
 
             available_hyperram_modules = {
-                "S70KS0641": S70KS0641,
-                "S70KS1281": S70KS1281
+                "S27KS0641DP": S27KS0641DP,
+                "S70KS1281DP": S70KS1281DP
             }
             hyperram_module = available_hyperram_modules.get(hyperram_device)
 
@@ -110,7 +110,7 @@ def main():
     trellis_args(parser)
     parser.add_argument("--sys-clk-freq", default=64e6,         help="System clock frequency (default=64MHz)")
     parser.add_argument("--device",       default="25F",        help="ECP5 device (default=25F)")
-    parser.add_argument("--hyperram-device", default="S70KS1281", help="HyperRAM device (default=S70KS1281)")
+    parser.add_argument("--hyperram-device", default="S70KS1281DP", help="HyperRAM device (default=S70KS1281DP)")
     parser.add_argument("--with-spi-sdcard", action="store_true", help="Enable SPI-mode SDCard support")
     args = parser.parse_args()
     args.yosys_abc9 = True
