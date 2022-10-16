@@ -121,7 +121,38 @@ _connectors = [
     ("GPIO", "- B9 B10 C10 A9")
 ]
 
+# Standard PMOD Pins
+pmod_spi = [
+    ("spi",0,
+        Subsignal("cs_n", Pins("GPIO:1"), IOStandard("LVCMOS33")),
+        Subsignal("mosi", Pins("GPIO:2"), IOStandard("LVCMOS33")),
+        Subsignal("miso", Pins("GPIO:3"), IOStandard("LVCMOS33")),
+        Subsignal("sck",  Pins("GPIO:4"), IOStandard("LVCMOS33"))
+    )
+]
 
+pmod_serial = [
+    ("serial", 0,
+        Subsignal("tx", Pins("GPIO:2"), IOStandard("LVCMOS33")),
+        Subsignal("rx", Pins("GPIO:3"), IOStandard("LVCMOS33"))
+    )
+]
+
+pmod_i2c = [
+    ("i2c", 0,
+        Subsignal("scl", Pins("GPIO:3"), IOStandard("LVCMOS33"), Misc("PULLMODE=UP")),
+        Subsignal("sda", Pins("GPIO:4"), IOStandard("LVCMOS33"), Misc("PULLMODE=UP"))
+    )
+]
+
+pmod_i2s = [
+    ("i2s", 0,
+        Subsignal("sync", Pins("GPIO:1"), IOStandard("LVCMOS33")),
+        Subsignal("tx", Pins("GPIO:2"), IOStandard("LVCMOS33")),
+        Subsignal("rx", Pins("GPIO:3"), IOStandard("LVCMOS33")),
+        Subsignal("clk", Pins("GPIO:4"), IOStandard("LVCMOS33"))
+    )
+]
 
 # Platform -----------------------------------------------------------------------------------------
 
