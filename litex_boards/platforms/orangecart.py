@@ -7,7 +7,7 @@ from litex.build.dfu import DFUProg
 
 # IOs ----------------------------------------------------------------------------------------------
 
-_io = [
+_io_r1_0 = [
     ("clk48", 0, Pins("C8"),  IOStandard("LVCMOS33")),
     ("rst_n", 0, Pins("M8"), IOStandard("LVCMOS33")),
 
@@ -114,11 +114,40 @@ _io = [
     ),
 ]
 
+
+def _replace_iostandard_r1_2(t):
+    return [Subsignal(x.name, *_replace_iostandard_r1_2(x.constraints))
+            if type(x) is Subsignal else
+            IOStandard({"LVCMOS33":"LVCMOS33",
+                        "LVCMOS18":"LVCMOS33",
+                        "SSTL18D_II":"LVCMOS33D"}[x.name])
+            if type(x) is IOStandard else x for x in t]
+
+_io_r1_2 = [tuple(_replace_iostandard_r1_2(x)) if x[0] != "c64expansionport"
+            else
+            (*x[:-2],
+             Subsignal("irq_in_n", Pins("H2")),
+             Subsignal("nmi_in_n", Pins("J4")),
+             *_replace_iostandard_r1_2(x[-2:])) for x in _io_r1_0] + [
+
+    ("tusb320", 0,
+        Subsignal("scl", Pins("P7")),
+        Subsignal("sda", Pins("R7")),
+        Subsignal("int_n", Pins("P8")),
+        IOStandard("LVCMOS33"), Misc("SLEWRATE=SLOW")),
+]
+
+
 # Connectors ---------------------------------------------------------------------------------------
 
-_connectors = [
+_connectors_r1_0 = [
     # "Pmod" connector
     ("GPIO", "- B9 B10 C10 A9")
+]
+
+_connectors_r1_2 = _connectors_r1_0 + [
+    # Real Pmod connector
+    ("GPIO2", "- H12 B15 C12 A12 - - J12 C14 D12 B12 - -")
 ]
 
 # Standard PMOD Pins
@@ -154,16 +183,50 @@ pmod_i2s = [
     )
 ]
 
+pmod2_gpio = [
+    ("gpio", 0,
+        Subsignal("io", Pins("GPIO2:1 GPIO2:2 GPIO2:3 GPIO2:4"),
+                  IOStandard("LVCMOS33")))
+]
+
+pmod2_xgpio = [
+    ("gpio", 0,
+        Subsignal("io", Pins("GPIO2:1 GPIO2:2 GPIO2:3 GPIO2:4 " +
+                             "GPIO2:7 GPIO2:8 GPIO2:9 GPIO2:10"),
+                  IOStandard("LVCMOS33")))
+]
+
+pmod2_spi = [
+    ("spi",0,
+        Subsignal("cs_n", Pins("GPIO2:1"), IOStandard("LVCMOS33")),
+        Subsignal("mosi", Pins("GPIO2:2"), IOStandard("LVCMOS33")),
+        Subsignal("miso", Pins("GPIO2:3"), IOStandard("LVCMOS33")),
+        Subsignal("sck",  Pins("GPIO2:4"), IOStandard("LVCMOS33"))
+    )
+]
+
+pmod2_xspi = [
+    ("spi",0,
+        Subsignal("cs_n", Pins("GPIO2:1 GPIO2:9 GPIO2:10"), IOStandard("LVCMOS33")),
+        Subsignal("mosi", Pins("GPIO2:2"), IOStandard("LVCMOS33")),
+        Subsignal("miso", Pins("GPIO2:3"), IOStandard("LVCMOS33")),
+        Subsignal("sck",  Pins("GPIO2:4"), IOStandard("LVCMOS33")),
+        Subsignal("int",  Pins("GPIO2:7"), IOStandard("LVCMOS33")),
+        Subsignal("reset",Pins("GPIO2:8"), IOStandard("LVCMOS33"))
+    )
+]
+
 # Platform -----------------------------------------------------------------------------------------
 
 class Platform(LatticePlatform):
     default_clk_name   = "clk48"
     default_clk_period = 1e9/48e6
 
-    def __init__(self, revision=None, device="25F", **kwargs):
+    def __init__(self, revision="1.0", device="25F", **kwargs):
+        assert revision in ["1.0", "1.2"]
         self.revision = revision
-        io         = _io
-        connectors = _connectors
+        io         = {"1.0": _io_r1_0,         "1.2": _io_r1_2        }[revision]
+        connectors = {"1.0": _connectors_r1_0, "1.2": _connectors_r1_2}[revision]
         LatticePlatform.__init__(self, f"LFE5U-{device}-6BG256C", io, connectors, **kwargs)
 
     def create_programmer(self):
